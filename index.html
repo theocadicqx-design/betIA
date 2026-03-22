@@ -4,209 +4,275 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BET-IA — Générateur de Ticket</title>
-  <meta name="description" content="Génère des tickets de paris sportifs optimisés par intelligence artificielle">
+  <meta name="description" content="Génère des tickets de paris sportifs optimisés par IA">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
   <style>
-    :root{--red:#e8001e;--gold:#ffcc00;--green:#00e676;--blue:#60a5fa;--bg:#09090c;--card:#0f1014;--b:rgba(255,255,255,.07)}
+    :root{--red:#e8001e;--gold:#ffcc00;--green:#00e676;--blue:#60a5fa;--purple:#a78bfa;--bg:#09090c;--card:#0f1014;--card2:#141519;--b:rgba(255,255,255,.07)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh;overflow-x:hidden}
     ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(255,204,0,.2);border-radius:2px}
     body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-    body::after{content:'';position:fixed;top:-40%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(232,0,30,.07) 0%,transparent 70%);z-index:0;pointer-events:none}
+    body::after{content:'';position:fixed;top:-40%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(232,0,30,.06) 0%,transparent 70%);z-index:0;pointer-events:none}
 
-    nav{position:sticky;top:0;z-index:40;background:rgba(9,9,12,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(232,0,30,.18);box-shadow:0 1px 30px rgba(0,0,0,.5)}
-    .nav-inner{max-width:820px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:40;background:rgba(9,9,12,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(232,0,30,.18);box-shadow:0 1px 30px rgba(0,0,0,.5)}
+    .nav-inner{max-width:820px;margin:auto;padding:11px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
     .logo{background:var(--red);font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:1.5rem;padding:3px 13px 4px;border-radius:6px;box-shadow:0 0 28px rgba(232,0,30,.45),inset 0 1px 0 rgba(255,255,255,.2)}
-    .nav-tag{font-size:.58rem;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase}
-    .ai-pill{background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,230,118,.04));border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.62rem;font-weight:700;letter-spacing:.12em;padding:5px 13px;border-radius:100px;display:flex;align-items:center;gap:6px}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .ai-pill{background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,230,118,.03));border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.6rem;font-weight:700;letter-spacing:.12em;padding:5px 12px;border-radius:100px;display:flex;align-items:center;gap:5px}
     .ai-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.8s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    /* quota badge */
+    .quota-pill{font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:5px 12px;border-radius:100px;cursor:pointer;transition:all .2s}
+    .quota-ok{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--blue)}
+    .quota-warn{background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:var(--gold)}
+    .quota-out{background:rgba(232,0,30,.12);border:1px solid rgba(232,0,30,.3);color:var(--red)}
 
-    main{max-width:820px;margin:0 auto;padding:32px 20px 100px;position:relative;z-index:1}
-
-    .hero{text-align:center;margin-bottom:32px}
-    .hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.9rem,5vw,2.9rem);text-transform:uppercase;letter-spacing:.03em;line-height:1.05;margin-bottom:8px}
+    /* ── MAIN ── */
+    main{max-width:820px;margin:0 auto;padding:28px 20px 100px;position:relative;z-index:1}
+    .hero{text-align:center;margin-bottom:28px}
+    .hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.9rem,5vw,2.8rem);text-transform:uppercase;letter-spacing:.03em;line-height:1.05;margin-bottom:7px}
     .hero-title span{color:var(--gold)}
-    .hero-sub{font-size:.88rem;color:rgba(255,255,255,.38);max-width:400px;margin:0 auto;line-height:1.5}
+    .hero-sub{font-size:.85rem;color:rgba(255,255,255,.36);max-width:400px;margin:0 auto;line-height:1.5}
 
-    .form-card{background:var(--card);border:1px solid var(--b);border-radius:24px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+    /* ── FORM CARD ── */
+    .form-card{background:var(--card);border:1px solid var(--b);border-radius:24px;padding:26px;margin-bottom:20px;position:relative;overflow:hidden}
     .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold),var(--green));border-radius:24px 24px 0 0}
-    .fl{font-size:.6rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.32);text-transform:uppercase;margin-bottom:9px;display:block}
+    .fl{font-size:.59rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:9px;display:block}
 
     /* AMOUNT */
     .aw{position:relative;margin-bottom:10px}
-    .ai{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:17px 20px 17px 52px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;outline:none;transition:all .25s;-moz-appearance:textfield}
-    .ai::-webkit-inner-spin-button,.ai::-webkit-outer-spin-button{-webkit-appearance:none}
-    .ai:focus{border-color:rgba(255,204,0,.45);background:rgba(255,204,0,.04);box-shadow:0 0 0 3px rgba(255,204,0,.07)}
-    .ei{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.7rem;color:var(--gold);opacity:.6;pointer-events:none}
-    .qas{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
-    .qb{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.55);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;padding:6px 14px;border-radius:100px;cursor:pointer;transition:all .2s}
+    .amtinput{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 20px 16px 50px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:900;outline:none;transition:all .25s;-moz-appearance:textfield}
+    .amtinput::-webkit-inner-spin-button,.amtinput::-webkit-outer-spin-button{-webkit-appearance:none}
+    .amtinput:focus{border-color:rgba(255,204,0,.45);background:rgba(255,204,0,.04);box-shadow:0 0 0 3px rgba(255,204,0,.07)}
+    .euroi{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.65rem;color:var(--gold);opacity:.55;pointer-events:none}
+    .qas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+    .qb{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.5);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;padding:5px 13px;border-radius:100px;cursor:pointer;transition:all .2s}
     .qb:hover{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.35);color:var(--gold)}
 
     /* RISK */
-    .rs{margin-bottom:26px}
-    .rh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px;flex-wrap:wrap}
-    .rpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;color:var(--gold);line-height:1}
-    .rbadge{font-size:.62rem;font-weight:700;letter-spacing:.1em;padding:4px 11px;border-radius:100px;text-transform:uppercase;transition:all .3s;white-space:nowrap}
+    .rh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px;gap:10px;flex-wrap:wrap}
+    .rpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.75rem;color:var(--gold);line-height:1}
+    .rbadge{font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:4px 11px;border-radius:100px;text-transform:uppercase;transition:all .3s;white-space:nowrap}
     .rbs{background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.25);color:var(--green)}
     .rbv{background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:var(--gold)}
     .rbr{background:rgba(232,0,30,.12);border:1px solid rgba(232,0,30,.3);color:var(--red)}
-    .st{position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09);margin-bottom:10px}
-    .sf{position:absolute;left:0;top:0;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green) 0%,var(--gold) 50%,var(--red) 100%);pointer-events:none}
-    input[type=range].rsl{position:absolute;inset:-6px 0;width:100%;height:19px;-webkit-appearance:none;background:transparent;outline:none;cursor:pointer;margin:0}
-    input[type=range].rsl::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.6);border:3px solid var(--gold);cursor:pointer;transition:transform .15s}
-    input[type=range].rsl::-webkit-slider-thumb:hover{transform:scale(1.15)}
-    .rzones{display:flex;justify-content:space-between;font-size:.57rem;color:rgba(255,255,255,.22);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .slidertrack{position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09);margin-bottom:9px}
+    .sliderfill{position:absolute;left:0;top:0;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green) 0%,var(--gold) 50%,var(--red) 100%);pointer-events:none}
+    input[type=range].rslider{position:absolute;inset:-6px 0;width:100%;height:19px;-webkit-appearance:none;background:transparent;outline:none;cursor:pointer;margin:0}
+    input[type=range].rslider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.6);border:3px solid var(--gold);cursor:pointer;transition:transform .15s}
+    input[type=range].rslider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+    .rzones{display:flex;justify-content:space-between;font-size:.56rem;color:rgba(255,255,255,.2);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px}
 
     /* SPORT */
-    .spg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-    .spb{flex:1;min-width:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 8px;text-align:center;cursor:pointer;transition:all .2s}
-    .spb:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+    .spg{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+    .spb{flex:1;min-width:65px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px 7px;text-align:center;cursor:pointer;transition:all .2s}
+    .spb:hover{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.06)}
     .spb.active{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.4)}
-    .se{font-size:1.5rem;display:block;margin-bottom:3px}
-    .sn{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+    .se{font-size:1.45rem;display:block;margin-bottom:3px}
+    .sn{font-size:.56rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42)}
     .spb.active .sn{color:var(--gold)}
 
-    /* NB */
-    .nbrow{display:flex;gap:7px;margin-bottom:24px}
-    .nbb{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 6px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;color:rgba(255,255,255,.45)}
-    .nbb:hover{border-color:rgba(255,255,255,.18)}
+    /* MODE TOGGLE */
+    .mode-row{display:flex;gap:8px;margin-bottom:22px}
+    .modebtn{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 10px;text-align:center;cursor:pointer;transition:all .2s}
+    .modebtn:hover{border-color:rgba(255,255,255,.16)}
+    .modebtn.active{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.4)}
+    .mode-emoji{font-size:1.3rem;display:block;margin-bottom:3px}
+    .mode-name{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+    .mode-desc{font-size:.52rem;color:rgba(255,255,255,.25);margin-top:2px;line-height:1.3}
+    .modebtn.active .mode-name{color:var(--gold)}
+    .modebtn.active .mode-desc{color:rgba(255,204,0,.5)}
+
+    /* NB SELECTIONS — with IA Choisit */
+    .nbrow{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+    .nbb{flex:1;min-width:50px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px 5px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.25rem;color:rgba(255,255,255,.42)}
+    .nbb:hover{border-color:rgba(255,255,255,.16)}
     .nbb.active{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.4);color:var(--gold)}
-    .nbs{font-size:.5rem;font-weight:700;letter-spacing:.08em;color:inherit;display:block;opacity:.65}
+    .nbs{font-size:.48rem;font-weight:700;letter-spacing:.07em;color:inherit;display:block;opacity:.65}
+    /* IA Choisit special style */
+    .nbb-ai{font-size:.9rem;background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(167,139,250,.03));border-color:rgba(167,139,250,.2);color:var(--purple)}
+    .nbb-ai.active{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.5);color:var(--purple)}
+    .nbb-ai .nbs{color:var(--purple);opacity:.8}
 
-    .finput{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:12px 16px;color:#fff;font-size:.9rem;outline:none;transition:all .25s;margin-bottom:24px}
+    .finput{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 16px;color:#fff;font-size:.88rem;outline:none;transition:all .25s;margin-bottom:22px}
     .finput:focus{border-color:rgba(255,204,0,.4);background:rgba(255,204,0,.03);box-shadow:0 0 0 3px rgba(255,204,0,.06)}
-    .finput::placeholder{color:rgba(255,255,255,.22)}
+    .finput::placeholder{color:rgba(255,255,255,.2)}
 
-    .genbtn{width:100%;background:linear-gradient(135deg,var(--gold) 0%,#e8a800 100%);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:18px 32px;border-radius:16px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;box-shadow:0 4px 32px rgba(255,204,0,.18),inset 0 1px 0 rgba(255,255,255,.22)}
-    .genbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 44px rgba(255,204,0,.32)}
+    /* FREEMIUM COUNTER */
+    .quota-bar{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .quota-dots{display:flex;gap:6px}
+    .qdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .3s}
+    .qdot.used{background:var(--red)}
+    .qdot.avail{background:var(--green);box-shadow:0 0 6px rgba(0,230,118,.4)}
+    .quota-txt{font-size:.72rem;color:rgba(255,255,255,.45);flex:1}
+    .quota-txt strong{color:#fff}
+    .unlock-mini{background:var(--gold);color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.08em;padding:6px 12px;border-radius:8px;border:none;cursor:pointer;white-space:nowrap;transition:all .2s}
+    .unlock-mini:hover{box-shadow:0 3px 12px rgba(255,204,0,.3)}
+
+    .genbtn{width:100%;background:linear-gradient(135deg,var(--gold) 0%,#e8a800 100%);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:17px 32px;border-radius:16px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;box-shadow:0 4px 32px rgba(255,204,0,.18),inset 0 1px 0 rgba(255,255,255,.22)}
+    .genbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 44px rgba(255,204,0,.3)}
     .genbtn:active:not(:disabled){transform:translateY(0)}
-    .genbtn:disabled{opacity:.5;cursor:not-allowed}
+    .genbtn:disabled{opacity:.45;cursor:not-allowed}
 
     /* LOADING */
-    .lcard{background:var(--card);border:1px solid var(--b);border-radius:22px;padding:50px 30px;text-align:center}
-    .spinner{width:48px;height:48px;border:3px solid rgba(255,204,0,.1);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 20px}
+    .lcard{background:var(--card);border:1px solid var(--b);border-radius:22px;padding:46px 28px;text-align:center}
+    .spinner{width:46px;height:46px;border:3px solid rgba(255,204,0,.1);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 18px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .lstep{font-size:.75rem;color:rgba(255,255,255,.25);transition:all .35s;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;justify-content:center;margin-bottom:6px}
-    .lstep.active{color:var(--gold);background:rgba(255,204,0,.06)}
+    .lstep{font-size:.73rem;color:rgba(255,255,255,.22);transition:all .35s;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;justify-content:center;margin-bottom:5px}
+    .lstep.active{color:var(--gold);background:rgba(255,204,0,.05)}
     .lstep.done{color:var(--green)}
 
-    /* TICKET */
-    .tcard{background:var(--card);border:1px solid rgba(255,204,0,.12);border-radius:24px;overflow:hidden;animation:slideUp .55s cubic-bezier(.4,0,.2,1) both}
-    @keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-    .thead{background:linear-gradient(135deg,rgba(232,0,30,.1),rgba(255,204,0,.05));padding:22px 26px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-    .tid{font-size:.58rem;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.22)}
-    .tmeta{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;margin-top:3px}
-    .ttype{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
-    .tbody{padding:24px 26px}
+    /* ── TICKET ── */
+    .tcard{background:var(--card);border:1px solid rgba(255,204,0,.12);border-radius:24px;overflow:hidden;animation:slideUp .5s cubic-bezier(.4,0,.2,1) both}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .thead{background:linear-gradient(135deg,rgba(232,0,30,.09),rgba(255,204,0,.04));padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .tid{font-size:.56rem;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.2)}
+    .tmeta{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;margin-top:3px}
+    .ttype{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px}
+    .tbody{padding:22px 24px}
 
     /* CONF RING */
-    .crow{display:flex;align-items:center;gap:16px;margin-bottom:22px}
-    .cring{position:relative;width:72px;height:72px;flex-shrink:0}
+    .crow{display:flex;align-items:center;gap:15px;margin-bottom:20px}
+    .cring{position:relative;width:70px;height:70px;flex-shrink:0}
     .cring svg{transform:rotate(-90deg)}
     .crtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
-    .crpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;line-height:1}
-    .crsm{font-size:.44rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.3)}
+    .crpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;line-height:1}
+    .crsm{font-size:.42rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.28)}
     .cinfo{flex:1;min-width:0}
-    .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;margin-bottom:3px}
-    .csub{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.4}
+    .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:900;margin-bottom:3px}
+    .csub{font-size:.76rem;color:rgba(255,255,255,.36);line-height:1.4}
 
-    /* SELECTIONS */
-    .slbl{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:10px}
-    .seli{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:16px;padding:16px 18px;margin-bottom:10px;transition:border-color .2s}
-    .seli:hover{border-color:rgba(255,204,0,.18)}
+    /* SELECTION ITEM */
+    .slbl{font-size:.56rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.26);text-transform:uppercase;margin-bottom:9px}
+    .seli{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:16px;padding:15px 17px;margin-bottom:9px;transition:border-color .2s}
+    .seli:hover{border-color:rgba(255,204,0,.16)}
     .seltp{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;margin-bottom:10px}
-    .sll{font-size:.57rem;font-weight:700;letter-spacing:.13em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:3px}
-    .sld{font-size:.57rem;color:rgba(255,255,255,.22);margin-bottom:4px}
-    .slm{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;line-height:1.2;margin-bottom:4px}
-    .slp{font-size:.82rem;color:rgba(255,255,255,.6)}
-    .slr{font-size:.72rem;color:rgba(255,255,255,.3);margin-top:4px;font-style:italic}
-    .slcote{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;color:var(--gold);line-height:1;text-align:right;white-space:nowrap}
-    .slcl{font-size:.5rem;color:rgba(255,255,255,.25);font-weight:700;letter-spacing:.08em;text-align:right}
+    .sll{font-size:.55rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.24);text-transform:uppercase;margin-bottom:2px}
+    .sld{font-size:.55rem;color:rgba(255,255,255,.2);margin-bottom:3px}
+    .slm{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;line-height:1.2;margin-bottom:4px}
+    .slp{font-size:.82rem;color:rgba(255,255,255,.62)}
+    .slr{font-size:.7rem;color:rgba(255,255,255,.28);margin-top:4px;font-style:italic}
+    /* sous-paris combo tags */
+    .combo-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+    .ctag{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:var(--purple);font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.04em}
+    .slcote{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.55rem;color:var(--gold);line-height:1;text-align:right;white-space:nowrap}
+    .slcl{font-size:.49rem;color:rgba(255,255,255,.24);font-weight:700;letter-spacing:.08em;text-align:right}
 
     /* STATS ACCORDION */
-    .stoggle{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:rgba(255,255,255,.5);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
-    .stoggle:hover{background:rgba(255,255,255,.06);color:#fff}
-    .sarrow{transition:transform .3s;font-size:.65rem;opacity:.6}
-    .stopen .sarrow{transform:rotate(180deg)}
-    .scont{display:none;padding-top:8px}
-    .scont.open{display:block;animation:fadeIn .22s ease}
+    .stog{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:8px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:rgba(255,255,255,.45);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
+    .stog:hover{background:rgba(255,255,255,.06);color:#fff}
+    .sarr{transition:transform .3s;font-size:.6rem;opacity:.5}
+    .stog.open .sarr{transform:rotate(180deg)}
+    .scont{display:none;padding-top:7px}
+    .scont.open{display:block;animation:fadeIn .2s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-    .stline{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.45}
+    .stline{display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.77rem;color:rgba(255,255,255,.58);line-height:1.45}
     .stline:last-child{border-bottom:none}
     .stline strong{color:#fff}
 
     /* TOTALS */
-    .totg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.055);border-radius:16px;overflow:hidden;margin:18px 0}
-    .totc{background:rgba(255,255,255,.02);padding:16px 12px;text-align:center}
-    .totl{font-size:.54rem;font-weight:700;letter-spacing:.13em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:6px}
-    .totv{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.55rem;line-height:1}
+    .totg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.055);border-radius:14px;overflow:hidden;margin:16px 0}
+    .totc{background:rgba(255,255,255,.02);padding:14px 10px;text-align:center}
+    .totl{font-size:.52rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.24);text-transform:uppercase;margin-bottom:5px}
+    .totv{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.5rem;line-height:1}
 
     /* VERDICT */
-    .verd{border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
-    .vemoji{font-size:2.2rem;flex-shrink:0}
-    .vtitle{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;margin-bottom:3px}
-    .vsub{font-size:.78rem;opacity:.72;line-height:1.45}
+    .verd{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:13px;margin-bottom:14px}
+    .vemoji{font-size:2rem;flex-shrink:0}
+    .vtitle{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;margin-bottom:2px}
+    .vsub{font-size:.76rem;opacity:.7;line-height:1.4}
 
     /* WHY */
-    .whybox{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:18px 20px;margin-bottom:16px}
-    .whylbl{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:12px}
-    .whyi{display:flex;gap:11px;margin-bottom:12px;align-items:flex-start}
+    .whybox{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+    .whylbl{font-size:.56rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.26);text-transform:uppercase;margin-bottom:11px}
+    .whyi{display:flex;gap:10px;margin-bottom:11px;align-items:flex-start}
     .whyi:last-child{margin-bottom:0}
-    .we{font-size:1.15rem;flex-shrink:0;margin-top:1px}
-    .wt{font-size:.82rem;color:rgba(255,255,255,.62);line-height:1.6}
+    .we{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+    .wt{font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.58}
     .wt strong{color:#fff;font-weight:700}
 
-    .actrow{display:flex;gap:10px;margin-bottom:16px}
-    .actbtn{flex:1;padding:13px;border-radius:13px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
-    .ap{background:var(--gold);color:#000}.ap:hover{box-shadow:0 4px 22px rgba(255,204,0,.28);transform:translateY(-1px)}
-    .as{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65)}.as:hover{background:rgba(255,255,255,.09);color:#fff}
-    .ash{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--blue)}.ash:hover{background:rgba(96,165,250,.15)}
-    .disc{font-size:.6rem;color:rgba(255,255,255,.18);line-height:1.6;padding:13px 16px;background:rgba(255,255,255,.02);border-radius:11px;border:1px solid rgba(255,255,255,.04)}
-    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin:16px 0}
+    /* AFFILIATION BANNER */
+    .aff-banner{background:linear-gradient(135deg,rgba(232,0,30,.08),rgba(232,0,30,.03));border:1px solid rgba(232,0,30,.2);border-radius:16px;padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .aff-logo{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:1.3rem;background:var(--red);padding:3px 10px;border-radius:5px;flex-shrink:0}
+    .aff-txt{flex:1;min-width:140px}
+    .aff-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.95rem;margin-bottom:2px}
+    .aff-sub{font-size:.7rem;color:rgba(255,255,255,.45);line-height:1.4}
+    .aff-btn{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.8rem;letter-spacing:.08em;padding:9px 16px;border-radius:10px;text-decoration:none;flex-shrink:0;transition:all .2s;box-shadow:0 3px 14px rgba(232,0,30,.25)}
+    .aff-btn:hover{box-shadow:0 5px 20px rgba(232,0,30,.4);transform:translateY(-1px)}
+
+    .actrow{display:flex;gap:9px;margin-bottom:14px}
+    .actbtn{flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+    .ap{background:var(--gold);color:#000}.ap:hover{box-shadow:0 4px 20px rgba(255,204,0,.28);transform:translateY(-1px)}
+    .as{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.62)}.as:hover{background:rgba(255,255,255,.09);color:#fff}
+    .ash{background:rgba(96,165,250,.09);border:1px solid rgba(96,165,250,.22);color:var(--blue)}.ash:hover{background:rgba(96,165,250,.14)}
+    .disc{font-size:.58rem;color:rgba(255,255,255,.17);line-height:1.58;padding:12px 15px;background:rgba(255,255,255,.02);border-radius:10px;border:1px solid rgba(255,255,255,.04)}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin:15px 0}
 
     /* ── PUB MODAL ── */
-    .pub-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeInO .3s ease}
-    @keyframes fadeInO{from{opacity:0}to{opacity:1}}
-    .pub-modal{background:#0f1014;border:1px solid rgba(255,204,0,.2);border-radius:24px;width:100%;max-width:480px;overflow:hidden;animation:slideUpM .4s cubic-bezier(.4,0,.2,1)}
-    @keyframes slideUpM{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .pub-header{background:linear-gradient(135deg,rgba(255,204,0,.08),rgba(255,204,0,.02));padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
-    .pub-tag{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:100px}
-    .pub-timer{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--gold);min-width:28px;text-align:right}
-    .pub-body{padding:24px}
-    .pub-skip{width:100%;background:var(--gold);color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:14px;border-radius:13px;border:none;cursor:pointer;transition:all .2s;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
-    .pub-skip:hover{box-shadow:0 4px 20px rgba(255,204,0,.28);transform:translateY(-1px)}
-    .pub-skip:disabled{opacity:.4;cursor:not-allowed;transform:none}
-    /* AD SLOT placeholder */
-    .ad-slot{background:rgba(255,255,255,.025);border:1px dashed rgba(255,255,255,.1);border-radius:14px;min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,.2);font-size:.75rem}
-    .ad-slot ins{display:block!important;width:100%;min-height:250px}
-    /* ADSENSE real ad styling */
-    .adsbygoogle{display:block;border-radius:12px;overflow:hidden}
+    .pub-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeOv .3s ease}
+    @keyframes fadeOv{from{opacity:0}to{opacity:1}}
+    .pub-modal{background:#0f1014;border:1px solid rgba(255,204,0,.18);border-radius:24px;width:100%;max-width:460px;overflow:hidden;animation:slideUpM .4s cubic-bezier(.4,0,.2,1)}
+    @keyframes slideUpM{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    .pub-head{background:linear-gradient(135deg,rgba(255,204,0,.07),rgba(255,204,0,.02));padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+    .pub-tag{font-size:.56rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.26);text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:3px 9px;border-radius:100px}
+    .pub-timer{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;color:var(--gold);min-width:26px;text-align:right}
+    .pub-body{padding:22px}
+    .pub-inner{background:linear-gradient(135deg,rgba(232,0,30,.09),rgba(0,0,0,0));border:1px solid rgba(232,0,30,.18);border-radius:16px;padding:22px;text-align:center;margin-bottom:16px}
+    .pub-skip{width:100%;background:var(--gold);color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:14px;border-radius:13px;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .pub-skip:hover:not(:disabled){box-shadow:0 4px 20px rgba(255,204,0,.28);transform:translateY(-1px)}
+    .pub-skip:disabled{opacity:.38;cursor:not-allowed;transform:none}
+
+    /* ── PAYWALL MODAL ── */
+    .pw-ov{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeOv .3s ease}
+    .pw-modal{background:#0f1014;border:1px solid rgba(255,204,0,.25);border-radius:24px;width:100%;max-width:420px;padding:32px 28px;text-align:center;animation:slideUpM .4s cubic-bezier(.4,0,.2,1)}
+    .pw-emoji{font-size:3.5rem;margin-bottom:12px}
+    .pw-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;text-transform:uppercase;margin-bottom:6px}
+    .pw-sub{font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.55;margin-bottom:24px}
+    .pw-plans{display:flex;gap:10px;margin-bottom:20px}
+    .pw-plan{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center}
+    .pw-plan:hover{border-color:rgba(255,204,0,.3)}
+    .pw-plan.featured{background:rgba(255,204,0,.08);border-color:rgba(255,204,0,.35)}
+    .pw-price{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;color:var(--gold);line-height:1;margin-bottom:3px}
+    .pw-period{font-size:.6rem;color:rgba(255,255,255,.35);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .pw-feat{font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.5}
+    .pw-cta{width:100%;background:linear-gradient(135deg,var(--gold),#e8a800);color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:.08em;text-transform:uppercase;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:all .2s;margin-bottom:12px;box-shadow:0 4px 28px rgba(255,204,0,.2)}
+    .pw-cta:hover{box-shadow:0 8px 36px rgba(255,204,0,.32);transform:translateY(-1px)}
+    .pw-close{background:none;border:none;color:rgba(255,255,255,.3);font-size:.78rem;cursor:pointer;padding:6px;transition:color .2s}
+    .pw-close:hover{color:#fff}
+    .stripe-badge{display:inline-flex;align-items:center;gap:5px;font-size:.62rem;color:rgba(255,255,255,.22);margin-top:6px}
   </style>
 </head>
 <body>
+
+<!-- ══ NAV ══ -->
 <nav>
   <div class="nav-inner">
-    <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;align-items:center;gap:9px">
       <div class="logo">BET-IA</div>
-      <div class="nav-tag">Ticket Generator</div>
+      <span style="font-size:.56rem;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.28);text-transform:uppercase">Ticket Generator</span>
     </div>
-    <div class="ai-pill"><span class="ai-dot"></span>IA ACTIVE</div>
+    <div class="nav-right">
+      <div class="quota-pill quota-ok" id="quotaPill" onclick="showPaywall()" title="Tickets restants aujourd'hui">🎫 <span id="quotaNav">3 tickets</span></div>
+      <div class="ai-pill"><span class="ai-dot"></span>IA ACTIVE</div>
+    </div>
   </div>
 </nav>
 
 <main>
   <div class="hero">
     <div class="hero-title">Ton ticket<br><span>optimisé par IA</span></div>
-    <div class="hero-sub">Configure ta mise et ton risque — l'IA génère un ticket avec de vraies stats</div>
+    <div class="hero-sub">Configure ta mise · choisis ton risque · l'IA génère un ticket avec les vraies stats</div>
   </div>
 
   <div class="form-card">
+
+    <!-- MISE -->
     <label class="fl">💰 Ta mise</label>
     <div class="aw">
-      <span class="ei">€</span>
-      <input type="number" class="ai" id="mise" value="20" min="1" max="100000">
+      <span class="euroi">€</span>
+      <input type="number" class="amtinput" id="mise" value="20" min="1" max="100000">
     </div>
     <div class="qas">
       <button class="qb" onclick="setMise(5)">5€</button>
@@ -217,22 +283,22 @@
       <button class="qb" onclick="setMise(200)">200€</button>
     </div>
 
-    <div class="rs">
-      <div class="rh">
-        <label class="fl" style="margin:0">⚡ Niveau de risque</label>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="rpct" id="rPct">50</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.3rem;color:rgba(255,255,255,.28)">%</span>
-          <span class="rbadge rbv" id="rBadge">🎯 VALUE BET</span>
-        </div>
+    <!-- RISQUE -->
+    <div class="rh">
+      <label class="fl" style="margin:0">⚡ Niveau de risque</label>
+      <div style="display:flex;align-items:center;gap:7px">
+        <span class="rpct" id="rPct">50</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;color:rgba(255,255,255,.26)">%</span>
+        <span class="rbadge rbv" id="rBadge">🎯 VALUE BET</span>
       </div>
-      <div class="st">
-        <div class="sf" id="sFill" style="width:50%"></div>
-        <input type="range" class="rsl" id="rSlider" min="1" max="99" value="50" oninput="updateRisk(this.value)">
-      </div>
-      <div class="rzones"><span>😴 Très prudent</span><span>🎯 Value bet</span><span>💀 YOLO</span></div>
     </div>
+    <div class="slidertrack" style="margin-top:12px">
+      <div class="sliderfill" id="sFill" style="width:50%"></div>
+      <input type="range" class="rslider" id="rSlider" min="1" max="99" value="50" oninput="updateRisk(this.value)">
+    </div>
+    <div class="rzones"><span>😴 Très prudent</span><span>🎯 Value bet</span><span>💀 YOLO</span></div>
 
+    <!-- SPORT -->
     <label class="fl">🏟️ Sport</label>
     <div class="spg">
       <div class="spb active" onclick="selectSport(this,'Football')"><span class="se">⚽</span><span class="sn">Football</span></div>
@@ -242,6 +308,22 @@
       <div class="spb" onclick="selectSport(this,'Surprise')"><span class="se">🤖</span><span class="sn">IA Choisit</span></div>
     </div>
 
+    <!-- MODE -->
+    <label class="fl">🎲 Mode de paris</label>
+    <div class="mode-row">
+      <div class="modebtn active" onclick="selectMode(this,'classic')">
+        <span class="mode-emoji">📋</span>
+        <div class="mode-name">Classique</div>
+        <div class="mode-desc">1X2, buts,<br>BTTS, handicap</div>
+      </div>
+      <div class="modebtn" onclick="selectMode(this,'combo')">
+        <span class="mode-emoji">🔥</span>
+        <div class="mode-name">Combo Avancé</div>
+        <div class="mode-desc">Buteurs, corners,<br>combis sur 1 match</div>
+      </div>
+    </div>
+
+    <!-- NB SELECTIONS -->
     <label class="fl">🎰 Nombre de sélections</label>
     <div class="nbrow">
       <div class="nbb" onclick="selectNb(this,1)">1<span class="nbs">Simple</span></div>
@@ -249,11 +331,19 @@
       <div class="nbb" onclick="selectNb(this,3)">3<span class="nbs">Triplé</span></div>
       <div class="nbb" onclick="selectNb(this,4)">4<span class="nbs">Combiné</span></div>
       <div class="nbb" onclick="selectNb(this,5)">5<span class="nbs">Maxi</span></div>
-      <div class="nbb nbb-ia" onclick="selectNb(this,0)" style="font-size:.85rem;background:rgba(255,204,0,.06);border-color:rgba(255,204,0,.2);">🤖<span class="nbs" style="color:rgba(255,204,0,.7)">IA Choisit</span></div>
+      <div class="nbb nbb-ai" onclick="selectNb(this,'ai')">🤖<span class="nbs">IA Choisit</span></div>
     </div>
 
-    <label class="fl">🔍 Focus <span style="color:rgba(255,255,255,.2);font-weight:400;text-transform:none;letter-spacing:0">— équipe, ligue, pays (optionnel)</span></label>
-    <input type="text" class="finput" id="focus" placeholder="Ex : PSG, Premier League, Ligue des Champions…">
+    <!-- FOCUS -->
+    <label class="fl">🔍 Focus <span style="color:rgba(255,255,255,.18);font-weight:400;text-transform:none;letter-spacing:0">— équipe, ligue, pays (optionnel)</span></label>
+    <input type="text" class="finput" id="focus" placeholder="Ex : PSG, Real Madrid, Premier League, Serie A…">
+
+    <!-- QUOTA BAR -->
+    <div class="quota-bar" id="quotaBar">
+      <div class="quota-dots" id="quotaDots"></div>
+      <div class="quota-txt" id="quotaTxt">Chargement…</div>
+      <button class="unlock-mini" onclick="showPaywall()">⚡ Illimité</button>
+    </div>
 
     <button class="genbtn" id="genBtn" onclick="generate()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -262,323 +352,519 @@
   </div>
 
   <div id="ticketArea"></div>
-
-  <!-- ══ PUB MODAL ══ -->
-  <div id="pubOverlay" style="display:none" class="pub-overlay" onclick="handleOverlayClick(event)">
-    <div class="pub-modal">
-      <div class="pub-header">
-        <span class="pub-tag">📢 Message de nos partenaires</span>
-        <span class="pub-timer" id="pubTimer">5</span>
-      </div>
-      <div class="pub-body">
-        <!-- ══ ZONE PUBLICITÉ ADSENSE ══
-             Remplace data-ad-client et data-ad-slot par tes vraies valeurs AdSense -->
-        <div class="ad-slot" id="adSlot">
-          <!-- AdSense s'affichera ici une fois approuvé.
-               En attendant, une bannière partenaire s'affiche. -->
-          <div style="text-align:center;padding:20px">
-            <div style="font-size:2.5rem;margin-bottom:10px">🎰</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;color:#fff;margin-bottom:6px">BETCLIC — BONUS 200€</div>
-            <div style="font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:16px;line-height:1.5">Rejoins Betclic et reçois jusqu'à 200€<br>offerts sur ton premier pari</div>
-            <a href="https://www.betclic.fr" target="_blank" rel="noopener" style="display:inline-block;background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.95rem;letter-spacing:.08em;padding:11px 24px;border-radius:10px;text-decoration:none;box-shadow:0 4px 16px rgba(232,0,30,.3)">
-              VOIR L'OFFRE →
-            </a>
-            <div style="font-size:.58rem;color:rgba(255,255,255,.18);margin-top:10px">Jeu responsable • 18+ • Conditions sur betclic.fr</div>
-          </div>
-        </div>
-
-        <!-- Vrai bloc AdSense (activer après approbation) -->
-        <!-- <ins class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXX"
-          data-ad-slot="XXXXXXXXXX"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});
-  /* ══ PUB SYSTEM ══ */
-  let _pubResolve = null;
-
-  function showPub(){
-    return new Promise(resolve => {
-      _pubResolve = resolve;
-      const overlay = document.getElementById('pubOverlay');
-      overlay.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      let count = 5;
-      document.getElementById('pubTimer').textContent = count;
-      document.getElementById('pubSkipCount').textContent = count;
-      const iv = setInterval(()=>{
-        count--;
-        document.getElementById('pubTimer').textContent = count;
-        document.getElementById('pubSkipCount').textContent = count;
-        if(count <= 0){
-          clearInterval(iv);
-          document.getElementById('pubSkip').disabled = false;
-          document.getElementById('pubSkipTxt').innerHTML = '✅ Accéder à mon ticket';
-        }
-      }, 1000);
-    });
-  }
-
-  function closePub(){
-    const overlay = document.getElementById('pubOverlay');
-    overlay.style.animation = 'none';
-    overlay.style.opacity = '0';
-    overlay.style.transition = 'opacity .25s';
-    setTimeout(()=>{
-      overlay.style.display = 'none';
-      overlay.style.opacity = '';
-      overlay.style.transition = '';
-      overlay.style.animation = '';
-      document.body.style.overflow = '';
-    }, 250);
-    if(_pubResolve){ _pubResolve(); _pubResolve = null; }
-  }
-
-  function handleOverlayClick(e){
-    // Only close if clicking the dark background, not the modal
-    if(e.target === document.getElementById('pubOverlay')){
-      // Don't close — user must wait or click skip
-    }
-  }
-
-</script> -->
-
-        <button class="pub-skip" id="pubSkip" onclick="closePub()" disabled>
-          <span id="pubSkipTxt">⏳ Patienter <span id="pubSkipCount">5</span>s</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
 </main>
 
-<script>
-  let sport='Football', nb=2;
-  window._lastTicket = null;
-
-  window.onload=()=>updateRisk(50);
-
-  function setMise(v){ document.getElementById('mise').value=v; }
-
-  function updateRisk(v){
-    document.getElementById('rPct').textContent=v;
-    document.getElementById('sFill').style.width=v+'%';
-    const b=document.getElementById('rBadge');
-    if(v<20){b.className='rbadge rbs';b.textContent='😴 TRÈS PRUDENT';}
-    else if(v<40){b.className='rbadge rbs';b.textContent='✅ PRUDENT';}
-    else if(v<60){b.className='rbadge rbv';b.textContent='🎯 VALUE BET';}
-    else if(v<80){b.className='rbadge rbr';b.textContent='🔥 RISQUÉ';}
-    else{b.className='rbadge rbr';b.textContent='💀 YOLO';}
-  }
-
-  function selectSport(el,name){
-    document.querySelectorAll('.spb').forEach(b=>b.classList.remove('active'));
-    el.classList.add('active'); sport=name;
-  }
-  function selectNb(el,n){
-    document.querySelectorAll('.nbb').forEach(b=>b.classList.remove('active'));
-    el.classList.add('active');
-    nb = n === 0 ? Math.floor(Math.random()*4)+2 : n; // 0 = IA choisit (2-5 aléatoire)
-    window._nbIsAI = (n === 0);
-  }
-  const delay=ms=>new Promise(r=>setTimeout(r,ms));
-
-  async function generate(){
-    const mise=parseFloat(document.getElementById('mise').value)||20;
-    const risk=parseInt(document.getElementById('rSlider').value);
-    const focus=document.getElementById('focus').value.trim();
-    const btn=document.getElementById('genBtn');
-    const area=document.getElementById('ticketArea');
-
-    // ── Show pub then generate
-    await showPub();
-
-    btn.disabled=true;
-    btn.innerHTML=`<div style="width:18px;height:18px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite"></div> ANALYSE EN COURS…`;
-
-    area.innerHTML=`
-      <div class="lcard">
-        <div class="spinner"></div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;letter-spacing:.06em;margin-bottom:5px">L'IA ANALYSE ⚡</div>
-        <div style="font-size:.78rem;color:rgba(255,255,255,.32);margin-bottom:20px">Construction de ton ticket personnalisé</div>
-        <div style="max-width:280px;margin:0 auto">
-          <div class="lstep active" id="ls1">📊 Analyse du marché ${sport}</div>
-          <div class="lstep" id="ls2">📈 Récupération des stats récentes</div>
-          <div class="lstep" id="ls3">🧠 Calcul risque / rendement</div>
-          <div class="lstep" id="ls4">🎯 Construction du ticket final</div>
-        </div>
-      </div>`;
-
-    for(let i=1;i<=4;i++){
-      await delay(600);
-      document.getElementById(`ls${i}`)?.classList.replace('active','done');
-      if(i<4) document.getElementById(`ls${i+1}`)?.classList.add('active');
-    }
-
-    try{
-      const res=await fetch('/api/generate',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({mise,risk,focus,sport,nb})
-      });
-      const data=await res.json();
-      if(!res.ok) throw new Error(data.error||`Erreur ${res.status}`);
-      renderTicket(data,mise);
-    }catch(e){
-      area.innerHTML=`
-        <div class="lcard" style="border-color:rgba(232,0,30,.3)">
-          <div style="font-size:2.8rem;margin-bottom:12px">😢</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:900;color:var(--red);margin-bottom:8px">ERREUR</div>
-          <div style="font-size:.85rem;color:rgba(255,255,255,.45);max-width:360px;margin:0 auto;line-height:1.5">${e.message}</div>
-        </div>`;
-    }finally{
-      btn.disabled=false;
-      btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> GÉNÉRER MON TICKET`;
-    }
-  }
-
-  function renderTicket(r,mise){
-    const conf=r.confiance||65;
-    const stroke=conf>=70?'#00e676':conf>=50?'#ffcc00':'#e8001e';
-    const circ=2*Math.PI*28, dash=(conf/100)*circ;
-    const tid=`BIA-${Date.now().toString(36).toUpperCase().slice(-6)}`;
-    window._lastTicket={id:tid,r,mise,sport,nb};
-
-    const typeCls=
-      r.type_ticket==='SIMPLE'?'background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.3);color:#00e676':
-      r.type_ticket==='COMBINÉ'?'background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:#ffcc00':
-      'background:rgba(232,0,30,.12);border:1px solid rgba(232,0,30,.3);color:#e8001e';
-    const vBg=
-      conf>=70?'background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.14);color:var(--green)':
-      conf>=50?'background:rgba(255,204,0,.07);border:1px solid rgba(255,204,0,.14);color:var(--gold)':
-      'background:rgba(232,0,30,.07);border:1px solid rgba(232,0,30,.14);color:var(--red)';
-
-    const selsHTML=(r.selections||[]).map((s,i)=>{
-      const st=s.stats?.length?`
-        <button class="stoggle" onclick="toggleStats(this,'sc${i}')">
-          📊 VOIR STATS & JUSTIFICATIONS <span class="sarrow">▼</span>
-        </button>
-        <div class="scont" id="sc${i}">
-          ${s.stats.map(x=>`<div class="stline">${x.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`).join('')}
-        </div>`:'';
-      return `
-        <div class="seli">
-          <div class="seltp">
-            <div>
-              <div class="sll">${s.league||''}</div>
-              ${s.date_match?`<div class="sld">📅 ${s.date_match}</div>`:''}
-              <div class="slm">${s.match||'—'}</div>
-              <div class="slp">${s.emoji||'⚽'} ${s.pari||'—'}</div>
-              ${s.raison_courte?`<div class="slr">"${s.raison_courte}"</div>`:''}
-            </div>
-            <div>
-              <div class="slcote">${parseFloat(s.cote).toFixed(2)}</div>
-              <div class="slcl">COTE</div>
-            </div>
-          </div>
-          ${st}
-        </div>`;
-    }).join('');
-
-    const whyHTML=(r.pourquoi||[]).map(p=>`
-      <div class="whyi">
-        <span class="we">${p.emoji}</span>
-        <span class="wt">${p.texte.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</span>
-      </div>`).join('');
-
-    document.getElementById('ticketArea').innerHTML=`
-    <div class="tcard">
-      <div class="thead">
-        <div>
-          <div class="tid"># ${tid}</div>
-          <div class="tmeta">${sport} · ${nb} sélection${nb>1?'s':''}</div>
-        </div>
-        <span class="ttype" style="${typeCls}">${r.type_ticket||'COMBINÉ'}</span>
+<!-- ══ PUB MODAL ══ -->
+<div id="pubOv" style="display:none" class="pub-ov">
+  <div class="pub-modal">
+    <div class="pub-head">
+      <span class="pub-tag">📢 Partenaire</span>
+      <span class="pub-timer" id="pubTimer">5</span>
+    </div>
+    <div class="pub-body">
+      <div class="pub-inner">
+        <div style="font-size:2.8rem;margin-bottom:10px">🎰</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;color:#fff;margin-bottom:5px">BETCLIC — 200€ OFFERTS</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.45);margin-bottom:18px;line-height:1.5">Rejoins Betclic et reçois jusqu'à <strong style="color:#fff">200€</strong><br>offerts sur ton premier dépôt</div>
+        <!-- ⚠️ Remplace ce lien par ton lien affilié Betclic -->
+        <a href="https://www.betclic.fr" target="_blank" rel="noopener sponsored"
+           onclick="trackAff('betclic')"
+           style="display:inline-block;background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.08em;padding:12px 26px;border-radius:11px;text-decoration:none;box-shadow:0 4px 18px rgba(232,0,30,.3)">
+          VOIR L'OFFRE →
+        </a>
+        <div style="font-size:.55rem;color:rgba(255,255,255,.16);margin-top:10px">Jeu responsable · 18+ · T&C sur betclic.fr</div>
       </div>
-      <div class="tbody">
-        <div class="crow">
-          <div class="cring">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="5.5"/>
-              <circle cx="36" cy="36" r="28" fill="none" stroke="${stroke}" stroke-width="5.5"
-                stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/>
-            </svg>
-            <div class="crtxt">
-              <span class="crpct" style="color:${stroke}">${conf}%</span>
-              <span class="crsm">CONF.</span>
-            </div>
-          </div>
-          <div class="cinfo">
-            <div class="ctitle">${r.verdict_titre||'Ticket IA'}</div>
-            <div class="csub">${r.verdict_texte||''}</div>
-          </div>
-        </div>
+      <button class="pub-skip" id="pubSkip" disabled onclick="closePub()">
+        <span id="pubSkipTxt">⏳ <span id="pubCount">5</span>s pour accéder au ticket</span>
+      </button>
+    </div>
+  </div>
+</div>
 
-        <div class="slbl">🎯 SÉLECTIONS</div>
-        ${selsHTML}
+<!-- ══ PAYWALL MODAL ══ -->
+<div id="pwOv" style="display:none" class="pw-ov">
+  <div class="pw-modal">
+    <div class="pw-emoji">⚡</div>
+    <div class="pw-title">Passe Premium</div>
+    <div class="pw-sub">Tu as utilisé tes 3 tickets gratuits du jour.<br>Passe Premium pour un accès illimité + tickets combo avancés exclusifs.</div>
+    <div class="pw-plans">
+      <div class="pw-plan" onclick="selectPlan(this,'daily')">
+        <div class="pw-price">1.99€</div>
+        <div class="pw-period">/ jour</div>
+        <div class="pw-feat">Illimité 24h<br>Tous les modes</div>
+      </div>
+      <div class="pw-plan featured" onclick="selectPlan(this,'monthly')">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--gold);margin-bottom:4px">⭐ POPULAIRE</div>
+        <div class="pw-price">4.99€</div>
+        <div class="pw-period">/ mois</div>
+        <div class="pw-feat">Illimité 30j<br>Combos + Stats avancées</div>
+      </div>
+      <div class="pw-plan" onclick="selectPlan(this,'yearly')">
+        <div class="pw-price">29€</div>
+        <div class="pw-period">/ an</div>
+        <div class="pw-feat">Le moins cher<br>2.4€/mois</div>
+      </div>
+    </div>
+    <!-- ⚠️ Remplace le lien par ton lien Stripe Payment Link -->
+    <button class="pw-cta" id="pwCta" onclick="goStripe()">
+      💳 PAYER MAINTENANT
+    </button>
+    <div class="stripe-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="22" height="18" rx="2"/><path d="M1 9h22"/></svg>
+      Paiement sécurisé par Stripe
+    </div>
+    <br>
+    <button class="pw-close" onclick="closePaywall()">← Continuer gratuitement (3/jour)</button>
+  </div>
+</div>
 
-        <div class="totg">
-          <div class="totc"><div class="totl">Mise</div><div class="totv" style="color:var(--gold)">${mise}€</div></div>
-          <div class="totc"><div class="totl">Cote totale</div><div class="totv" style="color:var(--gold)">${r.cote_totale?.toFixed(2)||'—'}</div></div>
-          <div class="totc"><div class="totl">Gain potentiel</div><div class="totv" style="color:var(--green)">${r.gain_potentiel||'—'}€</div></div>
-        </div>
+<script>
+/* ══════════════════════════════════════════
+   CONFIG — À personnaliser
+══════════════════════════════════════════ */
+const AFFILIATE_LINKS = {
+  betclic:  'https://www.betclic.fr',   // ← Remplace par ton lien affilié Betclic
+  winamax:  'https://www.winamax.fr',   // ← Remplace par ton lien affilié Winamax
+  unibet:   'https://www.unibet.fr',    // ← Remplace par ton lien affilié Unibet
+};
+// Stripe Payment Links — crée-les sur dashboard.stripe.com
+const STRIPE_LINKS = {
+  daily:   'https://buy.stripe.com/XXXX',  // ← Remplace par ton vrai lien Stripe
+  monthly: 'https://buy.stripe.com/XXXX',
+  yearly:  'https://buy.stripe.com/XXXX',
+};
+const FREE_LIMIT = 3; // tickets gratuits par jour
 
-        <div class="verd" style="${vBg}">
-          <span class="vemoji">${r.verdict_emoji||'🎯'}</span>
-          <div><div class="vtitle">${r.verdict_titre||''}</div><div class="vsub">${r.verdict_texte||''}</div></div>
-        </div>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let sport = 'Football';
+let nb = 2;
+let nbIsAI = false;
+let mode = 'classic';
+let selectedPlan = 'monthly';
+window._lastTicket = null;
 
-        <div class="whybox">
-          <div class="whylbl">💡 POURQUOI CE TICKET ?</div>
-          ${whyHTML}
-        </div>
+/* ══════════════════════════════════════════
+   QUOTA / FREEMIUM
+══════════════════════════════════════════ */
+function getQuota() {
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem('betia_quota') || '{}');
+  if (stored.date !== today) return { used: 0, date: today, premium: false };
+  return stored;
+}
+function useQuota() {
+  const q = getQuota();
+  q.used++;
+  localStorage.setItem('betia_quota', JSON.stringify(q));
+  updateQuotaUI();
+}
+function isPremium() {
+  const q = getQuota();
+  // Check premium flag (set after Stripe success via URL param)
+  if (q.premium) return true;
+  const p = localStorage.getItem('betia_premium');
+  return p && new Date(p) > new Date();
+}
+function hasQuota() {
+  if (isPremium()) return true;
+  return getQuota().used < FREE_LIMIT;
+}
+function updateQuotaUI() {
+  const q = getQuota();
+  const used = q.used;
+  const left = Math.max(0, FREE_LIMIT - used);
+  const prem = isPremium();
 
-        <div class="actrow">
-          <button class="actbtn ap" onclick="generate()">🔄 Nouveau</button>
-          <button class="actbtn as" onclick="copyTick()">📋 Copier</button>
-          <button class="actbtn ash" onclick="shareTick()">🔗 Partager</button>
-        </div>
-        <div class="disc">⚠️ Ce ticket est généré par IA à titre indicatif uniquement. Les paris sportifs comportent des risques financiers. Ne pariez que ce que vous pouvez vous permettre de perdre. Joueurs Info Service : <strong>09 74 75 13 13</strong></div>
+  // Dots
+  const dotsEl = document.getElementById('quotaDots');
+  if (dotsEl) {
+    dotsEl.innerHTML = prem ? '⭐' : Array.from({length: FREE_LIMIT}, (_,i) =>
+      `<div class="qdot ${i < used ? 'used' : 'avail'}"></div>`
+    ).join('');
+  }
+
+  // Text
+  const txtEl = document.getElementById('quotaTxt');
+  if (txtEl) {
+    if (prem) txtEl.innerHTML = '<strong>Premium actif ⚡</strong> — Tickets illimités';
+    else if (left === 0) txtEl.innerHTML = '<strong>Limite atteinte</strong> — Passe Premium pour continuer';
+    else txtEl.innerHTML = `<strong>${left} ticket${left>1?'s':''} gratuit${left>1?'s':''}</strong> restant${left>1?'s':''} aujourd'hui`;
+  }
+
+  // Nav pill
+  const pill = document.getElementById('quotaPill');
+  const nav = document.getElementById('quotaNav');
+  if (pill && nav) {
+    if (prem) { pill.className='quota-pill quota-ok'; nav.textContent='Premium ⭐'; }
+    else if (left === 0) { pill.className='quota-pill quota-out'; nav.textContent='0 ticket'; }
+    else if (left === 1) { pill.className='quota-pill quota-warn'; nav.textContent=`${left} ticket`; }
+    else { pill.className='quota-pill quota-ok'; nav.textContent=`${left} tickets`; }
+  }
+
+  // Btn
+  const btn = document.getElementById('genBtn');
+  if (btn && !isPremium() && left === 0) {
+    btn.innerHTML = '🔒 DÉBLOQUE L\'ACCÈS ILLIMITÉ';
+    btn.onclick = showPaywall;
+  } else if (btn) {
+    btn.onclick = generate;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> GÉNÉRER MON TICKET`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   PAYWALL
+══════════════════════════════════════════ */
+function showPaywall() {
+  document.getElementById('pwOv').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closePaywall() {
+  document.getElementById('pwOv').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function selectPlan(el, plan) {
+  document.querySelectorAll('.pw-plan').forEach(p => p.classList.remove('featured'));
+  el.classList.add('featured');
+  selectedPlan = plan;
+}
+function goStripe() {
+  const link = STRIPE_LINKS[selectedPlan];
+  if (!link || link.includes('XXXX')) {
+    // Demo mode — montre comment configurer
+    alert(`💳 Pour activer les paiements :\n\n1. Va sur dashboard.stripe.com\n2. Produits → Payment Links → Créer\n3. Remplace les liens STRIPE_LINKS dans le code\n\nPrix suggérés :\n• 1.99€/jour\n• 4.99€/mois ⭐\n• 29€/an`);
+    return;
+  }
+  window.open(link + '?success_url=' + encodeURIComponent(window.location.href + '?premium=1'), '_blank');
+}
+
+/* ══════════════════════════════════════════
+   PUB
+══════════════════════════════════════════ */
+let _pubResolve = null;
+function showPub() {
+  return new Promise(resolve => {
+    _pubResolve = resolve;
+    document.getElementById('pubOv').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    let c = 5;
+    document.getElementById('pubTimer').textContent = c;
+    document.getElementById('pubCount').textContent = c;
+    const iv = setInterval(()=>{
+      c--;
+      document.getElementById('pubTimer').textContent = c;
+      document.getElementById('pubCount').textContent = c;
+      if (c <= 0) {
+        clearInterval(iv);
+        const btn = document.getElementById('pubSkip');
+        btn.disabled = false;
+        document.getElementById('pubSkipTxt').innerHTML = '✅ ACCÉDER À MON TICKET';
+      }
+    }, 1000);
+  });
+}
+function closePub() {
+  const ov = document.getElementById('pubOv');
+  ov.style.opacity = '0';
+  ov.style.transition = 'opacity .2s';
+  setTimeout(()=>{ ov.style.display='none'; ov.style.opacity=''; ov.style.transition=''; document.body.style.overflow=''; }, 220);
+  if (_pubResolve) { _pubResolve(); _pubResolve = null; }
+}
+function trackAff(source) {
+  // Simple analytics — tu peux brancher Google Analytics ici
+  console.log('Affiliate click:', source);
+}
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+const delay = ms => new Promise(r => setTimeout(r, ms));
+function setMise(v) { document.getElementById('mise').value = v; }
+
+function updateRisk(v) {
+  document.getElementById('rPct').textContent = v;
+  document.getElementById('sFill').style.width = v + '%';
+  const b = document.getElementById('rBadge');
+  if      (v < 20) { b.className='rbadge rbs'; b.textContent='😴 TRÈS PRUDENT'; }
+  else if (v < 40) { b.className='rbadge rbs'; b.textContent='✅ PRUDENT'; }
+  else if (v < 60) { b.className='rbadge rbv'; b.textContent='🎯 VALUE BET'; }
+  else if (v < 80) { b.className='rbadge rbr'; b.textContent='🔥 RISQUÉ'; }
+  else             { b.className='rbadge rbr'; b.textContent='💀 YOLO'; }
+}
+function selectSport(el, name) {
+  document.querySelectorAll('.spb').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); sport = name;
+}
+function selectMode(el, m) {
+  document.querySelectorAll('.modebtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); mode = m;
+}
+function selectNb(el, n) {
+  document.querySelectorAll('.nbb').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if (n === 'ai') {
+    nbIsAI = true;
+    nb = Math.floor(Math.random() * 4) + 2; // 2–5 surprise
+  } else {
+    nbIsAI = false;
+    nb = parseInt(n);
+  }
+}
+
+/* ══════════════════════════════════════════
+   GENERATE
+══════════════════════════════════════════ */
+async function generate() {
+  // Check quota
+  if (!hasQuota()) { showPaywall(); return; }
+
+  const mise  = parseFloat(document.getElementById('mise').value) || 20;
+  const risk  = parseInt(document.getElementById('rSlider').value);
+  const focus = document.getElementById('focus').value.trim();
+  const btn   = document.getElementById('genBtn');
+  const area  = document.getElementById('ticketArea');
+
+  // Show pub (monetization)
+  await showPub();
+
+  // Consume quota
+  useQuota();
+
+  btn.disabled = true;
+  btn.innerHTML = `<div style="width:18px;height:18px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite"></div> ANALYSE EN COURS…`;
+
+  const actualNb = nbIsAI ? nb : nb; // nb already set by selectNb
+  const sportDisplay = sport === 'Surprise' ? '🤖 Surprise IA' : sport;
+
+  area.innerHTML = `
+    <div class="lcard">
+      <div class="spinner"></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;letter-spacing:.06em;margin-bottom:5px">L'IA ANALYSE ⚡</div>
+      <div style="font-size:.77rem;color:rgba(255,255,255,.3);margin-bottom:18px">${actualNb} sélection${actualNb>1?'s':''} · Mode ${mode === 'combo' ? '🔥 Combo Avancé' : '📋 Classique'}</div>
+      <div style="max-width:280px;margin:0 auto">
+        <div class="lstep active" id="ls1">📊 Analyse du marché ${sportDisplay}</div>
+        <div class="lstep" id="ls2">📈 Récupération des stats récentes</div>
+        <div class="lstep" id="ls3">🧠 Calcul risque / rendement</div>
+        <div class="lstep" id="ls4">🎯 Construction du ticket final</div>
       </div>
     </div>`;
 
-    document.getElementById('ticketArea').scrollIntoView({behavior:'smooth',block:'start'});
+  for (let i=1; i<=4; i++) {
+    await delay(600);
+    document.getElementById(`ls${i}`)?.classList.replace('active','done');
+    if (i < 4) document.getElementById(`ls${i+1}`)?.classList.add('active');
   }
 
-  function toggleStats(btn, id){
-    const c=document.getElementById(id);
-    const open=c.classList.toggle('open');
-    btn.classList.toggle('stopen',open);
-  }
-
-  function copyTick(){
-    const t=window._lastTicket; if(!t) return;
-    let txt=`🎯 TICKET BET-IA #${t.id}\n${'─'.repeat(30)}\n\n`;
-    (t.r.selections||[]).forEach((s,i)=>{
-      txt+=`${i+1}. ${s.match}\n   📌 ${s.pari} @ ${parseFloat(s.cote).toFixed(2)}\n`;
-      if(s.stats?.[0]) txt+=`   ${s.stats[0]}\n`;
-      txt+='\n';
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mise, risk, focus, sport, nb: actualNb, mode })
     });
-    txt+=`Mise: ${t.mise}€  |  Cote: ${t.r.cote_totale?.toFixed(2)}  |  Gain potentiel: ${t.r.gain_potentiel}€\n\nGénéré par BET-IA ⚡`;
-    navigator.clipboard.writeText(txt).then(()=>{
-      const btn=event.target.closest('button');
-      const o=btn.innerHTML; btn.innerHTML='✅ Copié !';
-      setTimeout(()=>btn.innerHTML=o,2000);
-    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Erreur ${res.status}`);
+    renderTicket(data, mise);
+  } catch(e) {
+    area.innerHTML = `
+      <div class="lcard" style="border-color:rgba(232,0,30,.3)">
+        <div style="font-size:2.8rem;margin-bottom:12px">😢</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:900;color:var(--red);margin-bottom:8px">ERREUR</div>
+        <div style="font-size:.84rem;color:rgba(255,255,255,.42);max-width:360px;margin:0 auto;line-height:1.5">${e.message}</div>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    updateQuotaUI();
   }
+}
 
-  function shareTick(){
-    const t=window._lastTicket; if(!t) return;
-    const text=`🎯 Mon ticket BET-IA #${t.id}\n${t.nb} sélection${t.nb>1?'s':''} ${t.sport}\nCote: ${t.r.cote_totale?.toFixed(2)} | Gain potentiel: ${t.r.gain_potentiel}€`;
-    if(navigator.share){ navigator.share({title:'BET-IA',text}).catch(()=>{}); }
-    else {
-      navigator.clipboard.writeText(text);
-      const btn=event.target.closest('button');
-      const o=btn.innerHTML; btn.innerHTML='✅ Copié !';
-      setTimeout(()=>btn.innerHTML=o,2000);
-    }
+/* ══════════════════════════════════════════
+   RENDER TICKET
+══════════════════════════════════════════ */
+function renderTicket(r, mise) {
+  const conf   = r.confiance || 65;
+  const stroke = conf >= 70 ? '#00e676' : conf >= 50 ? '#ffcc00' : '#e8001e';
+  const circ   = 2 * Math.PI * 28;
+  const dash   = (conf / 100) * circ;
+  const tid    = `BIA-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+  window._lastTicket = { id:tid, r, mise, sport, nb };
+
+  const typeCls =
+    (r.type_ticket||'').includes('SIMPLE')  ? 'background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.3);color:#00e676' :
+    (r.type_ticket||'').includes('COMBO')   ? 'background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:#a78bfa' :
+    'background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:#ffcc00';
+  const vBg =
+    conf >= 70 ? 'background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.13);color:var(--green)' :
+    conf >= 50 ? 'background:rgba(255,204,0,.07);border:1px solid rgba(255,204,0,.13);color:var(--gold)' :
+    'background:rgba(232,0,30,.07);border:1px solid rgba(232,0,30,.13);color:var(--red)';
+
+  /* Pick random affiliate for this ticket */
+  const affKeys = Object.keys(AFFILIATE_LINKS);
+  const affKey  = affKeys[Math.floor(Math.random() * affKeys.length)];
+  const affLink = AFFILIATE_LINKS[affKey];
+  const affNames = { betclic:'BETCLIC', winamax:'WINAMAX', unibet:'UNIBET' };
+  const affBonuses = { betclic:'200€ offerts', winamax:'100€ de freebets', unibet:'100€ de bonus' };
+
+  const selsHTML = (r.selections || []).map((s, i) => {
+    // combo tags
+    const tagsHTML = s.sous_paris?.length ? `
+      <div class="combo-tags">
+        ${s.sous_paris.map(p=>`<span class="ctag">🔗 ${p}</span>`).join('')}
+      </div>` : '';
+    // stats accordion
+    const statsHTML = s.stats?.length ? `
+      <button class="stog" onclick="toggleStats(this,'sc${i}')">
+        📊 STATS & JUSTIFICATIONS <span class="sarr">▼</span>
+      </button>
+      <div class="scont" id="sc${i}">
+        ${s.stats.map(x=>`<div class="stline">${x.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`).join('')}
+      </div>` : '';
+    return `
+      <div class="seli">
+        <div class="seltp">
+          <div>
+            <div class="sll">${s.league||''}</div>
+            ${s.date_match?`<div class="sld">📅 ${s.date_match}</div>`:''}
+            <div class="slm">${s.match||'—'}</div>
+            <div class="slp">${s.emoji||'⚽'} ${s.pari||'—'}</div>
+            ${s.raison_courte?`<div class="slr">"${s.raison_courte}"</div>`:''}
+            ${tagsHTML}
+          </div>
+          <div>
+            <div class="slcote">${parseFloat(s.cote).toFixed(2)}</div>
+            <div class="slcl">COTE</div>
+          </div>
+        </div>
+        ${statsHTML}
+      </div>`;
+  }).join('');
+
+  const whyHTML = (r.pourquoi||[]).map(p=>`
+    <div class="whyi">
+      <span class="we">${p.emoji}</span>
+      <span class="wt">${p.texte.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</span>
+    </div>`).join('');
+
+  document.getElementById('ticketArea').innerHTML = `
+  <div class="tcard">
+    <div class="thead">
+      <div>
+        <div class="tid"># ${tid}</div>
+        <div class="tmeta">${sport} · ${r.selections?.length||nb} sélection${(r.selections?.length||nb)>1?'s':''} · Mode ${mode==='combo'?'🔥 Combo':'📋 Classique'}</div>
+      </div>
+      <span class="ttype" style="${typeCls}">${r.type_ticket||'COMBINÉ'}</span>
+    </div>
+    <div class="tbody">
+
+      <div class="crow">
+        <div class="cring">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="5.5"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="${stroke}" stroke-width="5.5"
+              stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/>
+          </svg>
+          <div class="crtxt">
+            <span class="crpct" style="color:${stroke}">${conf}%</span>
+            <span class="crsm">CONF.</span>
+          </div>
+        </div>
+        <div class="cinfo">
+          <div class="ctitle">${r.verdict_titre||'Ticket IA'}</div>
+          <div class="csub">${r.verdict_texte||''}</div>
+        </div>
+      </div>
+
+      <div class="slbl">🎯 SÉLECTIONS</div>
+      ${selsHTML}
+
+      <div class="totg">
+        <div class="totc"><div class="totl">Mise</div><div class="totv" style="color:var(--gold)">${mise}€</div></div>
+        <div class="totc"><div class="totl">Cote totale</div><div class="totv" style="color:var(--gold)">${r.cote_totale?.toFixed(2)||'—'}</div></div>
+        <div class="totc"><div class="totl">Gain potentiel</div><div class="totv" style="color:var(--green)">${r.gain_potentiel||'—'}€</div></div>
+      </div>
+
+      <div class="verd" style="${vBg}">
+        <span class="vemoji">${r.verdict_emoji||'🎯'}</span>
+        <div><div class="vtitle">${r.verdict_titre||''}</div><div class="vsub">${r.verdict_texte||''}</div></div>
+      </div>
+
+      <div class="whybox">
+        <div class="whylbl">💡 POURQUOI CE TICKET ?</div>
+        ${whyHTML}
+      </div>
+
+      <!-- AFFILIATION BANNER -->
+      <div class="aff-banner">
+        <div class="aff-logo">${affNames[affKey]||'BETCLIC'}</div>
+        <div class="aff-txt">
+          <div class="aff-title">${affBonuses[affKey]||'200€ offerts'} pour jouer ce ticket !</div>
+          <div class="aff-sub">Inscris-toi maintenant et reçois ton bonus de bienvenue</div>
+        </div>
+        <a href="${affLink}" target="_blank" rel="noopener sponsored" class="aff-btn" onclick="trackAff('${affKey}')">
+          VOIR L'OFFRE →
+        </a>
+      </div>
+
+      <div class="actrow">
+        <button class="actbtn ap" onclick="generate()">🔄 Nouveau</button>
+        <button class="actbtn as" onclick="copyTick()">📋 Copier</button>
+        <button class="actbtn ash" onclick="shareTick()">🔗 Partager</button>
+      </div>
+      <div class="disc">⚠️ Ticket généré par IA à titre indicatif. Les paris comportent des risques financiers. Jouez responsable. Joueurs Info Service : <strong>09 74 75 13 13</strong></div>
+    </div>
+  </div>`;
+
+  document.getElementById('ticketArea').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function toggleStats(btn, id) {
+  const c = document.getElementById(id);
+  const open = c.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+function copyTick() {
+  const t = window._lastTicket; if (!t) return;
+  let txt = `🎯 TICKET BET-IA #${t.id}\n${'─'.repeat(30)}\n\n`;
+  (t.r.selections||[]).forEach((s,i) => {
+    txt += `${i+1}. ${s.match}\n   📌 ${s.pari} @ ${parseFloat(s.cote).toFixed(2)}\n`;
+    if (s.stats?.[0]) txt += `   ${s.stats[0]}\n`;
+    txt += '\n';
+  });
+  txt += `Mise: ${t.mise}€ · Cote: ${t.r.cote_totale?.toFixed(2)} · Gain: ${t.r.gain_potentiel}€\n\nGénéré par BET-IA ⚡`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn = event.target.closest('button');
+    const o = btn.innerHTML; btn.innerHTML = '✅ Copié !';
+    setTimeout(()=>btn.innerHTML=o, 2000);
+  });
+}
+function shareTick() {
+  const t = window._lastTicket; if (!t) return;
+  const text = `🎯 Mon ticket BET-IA #${t.id}\n${t.r.selections?.length||t.nb} sélections ${t.sport}\nCote: ${t.r.cote_totale?.toFixed(2)} | Gain potentiel: ${t.r.gain_potentiel}€\n\nbetia.vercel.app`;
+  if (navigator.share) { navigator.share({title:'BET-IA',text}).catch(()=>{}); }
+  else {
+    navigator.clipboard.writeText(text);
+    const btn = event.target.closest('button');
+    const o = btn.innerHTML; btn.innerHTML = '✅ Copié !';
+    setTimeout(()=>btn.innerHTML=o, 2000);
   }
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.onload = () => {
+  updateRisk(50);
+  updateQuotaUI();
+  // Check Stripe success redirect
+  if (new URLSearchParams(window.location.search).get('premium') === '1') {
+    const exp = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    localStorage.setItem('betia_premium', exp);
+    updateQuotaUI();
+    history.replaceState({}, '', window.location.pathname);
+  }
+};
 </script>
 </body>
 </html>
