@@ -165,6 +165,24 @@
     .ash{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--blue)}.ash:hover{background:rgba(96,165,250,.15)}
     .disc{font-size:.6rem;color:rgba(255,255,255,.18);line-height:1.6;padding:13px 16px;background:rgba(255,255,255,.02);border-radius:11px;border:1px solid rgba(255,255,255,.04)}
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin:16px 0}
+
+    /* ── PUB MODAL ── */
+    .pub-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeInO .3s ease}
+    @keyframes fadeInO{from{opacity:0}to{opacity:1}}
+    .pub-modal{background:#0f1014;border:1px solid rgba(255,204,0,.2);border-radius:24px;width:100%;max-width:480px;overflow:hidden;animation:slideUpM .4s cubic-bezier(.4,0,.2,1)}
+    @keyframes slideUpM{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    .pub-header{background:linear-gradient(135deg,rgba(255,204,0,.08),rgba(255,204,0,.02));padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+    .pub-tag{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:100px}
+    .pub-timer{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--gold);min-width:28px;text-align:right}
+    .pub-body{padding:24px}
+    .pub-skip{width:100%;background:var(--gold);color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:14px;border-radius:13px;border:none;cursor:pointer;transition:all .2s;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+    .pub-skip:hover{box-shadow:0 4px 20px rgba(255,204,0,.28);transform:translateY(-1px)}
+    .pub-skip:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    /* AD SLOT placeholder */
+    .ad-slot{background:rgba(255,255,255,.025);border:1px dashed rgba(255,255,255,.1);border-radius:14px;min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,.2);font-size:.75rem}
+    .ad-slot ins{display:block!important;width:100%;min-height:250px}
+    /* ADSENSE real ad styling */
+    .adsbygoogle{display:block;border-radius:12px;overflow:hidden}
   </style>
 </head>
 <body>
@@ -231,6 +249,7 @@
       <div class="nbb" onclick="selectNb(this,3)">3<span class="nbs">Triplé</span></div>
       <div class="nbb" onclick="selectNb(this,4)">4<span class="nbs">Combiné</span></div>
       <div class="nbb" onclick="selectNb(this,5)">5<span class="nbs">Maxi</span></div>
+      <div class="nbb nbb-ia" onclick="selectNb(this,0)" style="font-size:.85rem;background:rgba(255,204,0,.06);border-color:rgba(255,204,0,.2);">🤖<span class="nbs" style="color:rgba(255,204,0,.7)">IA Choisit</span></div>
     </div>
 
     <label class="fl">🔍 Focus <span style="color:rgba(255,255,255,.2);font-weight:400;text-transform:none;letter-spacing:0">— équipe, ligue, pays (optionnel)</span></label>
@@ -243,6 +262,95 @@
   </div>
 
   <div id="ticketArea"></div>
+
+  <!-- ══ PUB MODAL ══ -->
+  <div id="pubOverlay" style="display:none" class="pub-overlay" onclick="handleOverlayClick(event)">
+    <div class="pub-modal">
+      <div class="pub-header">
+        <span class="pub-tag">📢 Message de nos partenaires</span>
+        <span class="pub-timer" id="pubTimer">5</span>
+      </div>
+      <div class="pub-body">
+        <!-- ══ ZONE PUBLICITÉ ADSENSE ══
+             Remplace data-ad-client et data-ad-slot par tes vraies valeurs AdSense -->
+        <div class="ad-slot" id="adSlot">
+          <!-- AdSense s'affichera ici une fois approuvé.
+               En attendant, une bannière partenaire s'affiche. -->
+          <div style="text-align:center;padding:20px">
+            <div style="font-size:2.5rem;margin-bottom:10px">🎰</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;color:#fff;margin-bottom:6px">BETCLIC — BONUS 200€</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:16px;line-height:1.5">Rejoins Betclic et reçois jusqu'à 200€<br>offerts sur ton premier pari</div>
+            <a href="https://www.betclic.fr" target="_blank" rel="noopener" style="display:inline-block;background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.95rem;letter-spacing:.08em;padding:11px 24px;border-radius:10px;text-decoration:none;box-shadow:0 4px 16px rgba(232,0,30,.3)">
+              VOIR L'OFFRE →
+            </a>
+            <div style="font-size:.58rem;color:rgba(255,255,255,.18);margin-top:10px">Jeu responsable • 18+ • Conditions sur betclic.fr</div>
+          </div>
+        </div>
+
+        <!-- Vrai bloc AdSense (activer après approbation) -->
+        <!-- <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-XXXXXXXXXX"
+          data-ad-slot="XXXXXXXXXX"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});
+  /* ══ PUB SYSTEM ══ */
+  let _pubResolve = null;
+
+  function showPub(){
+    return new Promise(resolve => {
+      _pubResolve = resolve;
+      const overlay = document.getElementById('pubOverlay');
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      let count = 5;
+      document.getElementById('pubTimer').textContent = count;
+      document.getElementById('pubSkipCount').textContent = count;
+      const iv = setInterval(()=>{
+        count--;
+        document.getElementById('pubTimer').textContent = count;
+        document.getElementById('pubSkipCount').textContent = count;
+        if(count <= 0){
+          clearInterval(iv);
+          document.getElementById('pubSkip').disabled = false;
+          document.getElementById('pubSkipTxt').innerHTML = '✅ Accéder à mon ticket';
+        }
+      }, 1000);
+    });
+  }
+
+  function closePub(){
+    const overlay = document.getElementById('pubOverlay');
+    overlay.style.animation = 'none';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity .25s';
+    setTimeout(()=>{
+      overlay.style.display = 'none';
+      overlay.style.opacity = '';
+      overlay.style.transition = '';
+      overlay.style.animation = '';
+      document.body.style.overflow = '';
+    }, 250);
+    if(_pubResolve){ _pubResolve(); _pubResolve = null; }
+  }
+
+  function handleOverlayClick(e){
+    // Only close if clicking the dark background, not the modal
+    if(e.target === document.getElementById('pubOverlay')){
+      // Don't close — user must wait or click skip
+    }
+  }
+
+</script> -->
+
+        <button class="pub-skip" id="pubSkip" onclick="closePub()" disabled>
+          <span id="pubSkipTxt">⏳ Patienter <span id="pubSkipCount">5</span>s</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -270,7 +378,9 @@
   }
   function selectNb(el,n){
     document.querySelectorAll('.nbb').forEach(b=>b.classList.remove('active'));
-    el.classList.add('active'); nb=n;
+    el.classList.add('active');
+    nb = n === 0 ? Math.floor(Math.random()*4)+2 : n; // 0 = IA choisit (2-5 aléatoire)
+    window._nbIsAI = (n === 0);
   }
   const delay=ms=>new Promise(r=>setTimeout(r,ms));
 
@@ -280,6 +390,9 @@
     const focus=document.getElementById('focus').value.trim();
     const btn=document.getElementById('genBtn');
     const area=document.getElementById('ticketArea');
+
+    // ── Show pub then generate
+    await showPub();
 
     btn.disabled=true;
     btn.innerHTML=`<div style="width:18px;height:18px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite"></div> ANALYSE EN COURS…`;
