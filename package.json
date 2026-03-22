@@ -1,0 +1,9 @@
+{
+  "name": "bet-ia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Générateur de tickets de paris IA",
+  "engines": {
+    "node": "20.x"
+  }
+}
