@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BET-IA — Générateur de Ticket</title>
+  <meta name="description" content="Génère des tickets de paris sportifs optimisés par intelligence artificielle">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root{--red:#e8001e;--gold:#ffcc00;--green:#00e676;--blue:#60a5fa;--bg:#09090c;--card:#0f1014;--b:rgba(255,255,255,.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh;overflow-x:hidden}
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(255,204,0,.2);border-radius:2px}
+    body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    body::after{content:'';position:fixed;top:-40%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(232,0,30,.07) 0%,transparent 70%);z-index:0;pointer-events:none}
+
+    nav{position:sticky;top:0;z-index:40;background:rgba(9,9,12,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(232,0,30,.18);box-shadow:0 1px 30px rgba(0,0,0,.5)}
+    .nav-inner{max-width:820px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .logo{background:var(--red);font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:1.5rem;padding:3px 13px 4px;border-radius:6px;box-shadow:0 0 28px rgba(232,0,30,.45),inset 0 1px 0 rgba(255,255,255,.2)}
+    .nav-tag{font-size:.58rem;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase}
+    .ai-pill{background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,230,118,.04));border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.62rem;font-weight:700;letter-spacing:.12em;padding:5px 13px;border-radius:100px;display:flex;align-items:center;gap:6px}
+    .ai-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.8s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+    main{max-width:820px;margin:0 auto;padding:32px 20px 100px;position:relative;z-index:1}
+
+    .hero{text-align:center;margin-bottom:32px}
+    .hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.9rem,5vw,2.9rem);text-transform:uppercase;letter-spacing:.03em;line-height:1.05;margin-bottom:8px}
+    .hero-title span{color:var(--gold)}
+    .hero-sub{font-size:.88rem;color:rgba(255,255,255,.38);max-width:400px;margin:0 auto;line-height:1.5}
+
+    .form-card{background:var(--card);border:1px solid var(--b);border-radius:24px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+    .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold),var(--green));border-radius:24px 24px 0 0}
+    .fl{font-size:.6rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.32);text-transform:uppercase;margin-bottom:9px;display:block}
+
+    /* AMOUNT */
+    .aw{position:relative;margin-bottom:10px}
+    .ai{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:17px 20px 17px 52px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;outline:none;transition:all .25s;-moz-appearance:textfield}
+    .ai::-webkit-inner-spin-button,.ai::-webkit-outer-spin-button{-webkit-appearance:none}
+    .ai:focus{border-color:rgba(255,204,0,.45);background:rgba(255,204,0,.04);box-shadow:0 0 0 3px rgba(255,204,0,.07)}
+    .ei{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.7rem;color:var(--gold);opacity:.6;pointer-events:none}
+    .qas{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
+    .qb{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.55);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;padding:6px 14px;border-radius:100px;cursor:pointer;transition:all .2s}
+    .qb:hover{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.35);color:var(--gold)}
+
+    /* RISK */
+    .rs{margin-bottom:26px}
+    .rh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+    .rpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;color:var(--gold);line-height:1}
+    .rbadge{font-size:.62rem;font-weight:700;letter-spacing:.1em;padding:4px 11px;border-radius:100px;text-transform:uppercase;transition:all .3s;white-space:nowrap}
+    .rbs{background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.25);color:var(--green)}
+    .rbv{background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:var(--gold)}
+    .rbr{background:rgba(232,0,30,.12);border:1px solid rgba(232,0,30,.3);color:var(--red)}
+    .st{position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09);margin-bottom:10px}
+    .sf{position:absolute;left:0;top:0;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green) 0%,var(--gold) 50%,var(--red) 100%);pointer-events:none}
+    input[type=range].rsl{position:absolute;inset:-6px 0;width:100%;height:19px;-webkit-appearance:none;background:transparent;outline:none;cursor:pointer;margin:0}
+    input[type=range].rsl::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.6);border:3px solid var(--gold);cursor:pointer;transition:transform .15s}
+    input[type=range].rsl::-webkit-slider-thumb:hover{transform:scale(1.15)}
+    .rzones{display:flex;justify-content:space-between;font-size:.57rem;color:rgba(255,255,255,.22);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
+    /* SPORT */
+    .spg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .spb{flex:1;min-width:70px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 8px;text-align:center;cursor:pointer;transition:all .2s}
+    .spb:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+    .spb.active{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.4)}
+    .se{font-size:1.5rem;display:block;margin-bottom:3px}
+    .sn{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+    .spb.active .sn{color:var(--gold)}
+
+    /* NB */
+    .nbrow{display:flex;gap:7px;margin-bottom:24px}
+    .nbb{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px 6px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;color:rgba(255,255,255,.45)}
+    .nbb:hover{border-color:rgba(255,255,255,.18)}
+    .nbb.active{background:rgba(255,204,0,.1);border-color:rgba(255,204,0,.4);color:var(--gold)}
+    .nbs{font-size:.5rem;font-weight:700;letter-spacing:.08em;color:inherit;display:block;opacity:.65}
+
+    .finput{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:12px 16px;color:#fff;font-size:.9rem;outline:none;transition:all .25s;margin-bottom:24px}
+    .finput:focus{border-color:rgba(255,204,0,.4);background:rgba(255,204,0,.03);box-shadow:0 0 0 3px rgba(255,204,0,.06)}
+    .finput::placeholder{color:rgba(255,255,255,.22)}
+
+    .genbtn{width:100%;background:linear-gradient(135deg,var(--gold) 0%,#e8a800 100%);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:18px 32px;border-radius:16px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;box-shadow:0 4px 32px rgba(255,204,0,.18),inset 0 1px 0 rgba(255,255,255,.22)}
+    .genbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 44px rgba(255,204,0,.32)}
+    .genbtn:active:not(:disabled){transform:translateY(0)}
+    .genbtn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* LOADING */
+    .lcard{background:var(--card);border:1px solid var(--b);border-radius:22px;padding:50px 30px;text-align:center}
+    .spinner{width:48px;height:48px;border:3px solid rgba(255,204,0,.1);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 20px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .lstep{font-size:.75rem;color:rgba(255,255,255,.25);transition:all .35s;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;justify-content:center;margin-bottom:6px}
+    .lstep.active{color:var(--gold);background:rgba(255,204,0,.06)}
+    .lstep.done{color:var(--green)}
+
+    /* TICKET */
+    .tcard{background:var(--card);border:1px solid rgba(255,204,0,.12);border-radius:24px;overflow:hidden;animation:slideUp .55s cubic-bezier(.4,0,.2,1) both}
+    @keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    .thead{background:linear-gradient(135deg,rgba(232,0,30,.1),rgba(255,204,0,.05));padding:22px 26px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    .tid{font-size:.58rem;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.22)}
+    .tmeta{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;margin-top:3px}
+    .ttype{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
+    .tbody{padding:24px 26px}
+
+    /* CONF RING */
+    .crow{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+    .cring{position:relative;width:72px;height:72px;flex-shrink:0}
+    .cring svg{transform:rotate(-90deg)}
+    .crtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+    .crpct{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;line-height:1}
+    .crsm{font-size:.44rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.3)}
+    .cinfo{flex:1;min-width:0}
+    .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;margin-bottom:3px}
+    .csub{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.4}
+
+    /* SELECTIONS */
+    .slbl{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:10px}
+    .seli{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:16px;padding:16px 18px;margin-bottom:10px;transition:border-color .2s}
+    .seli:hover{border-color:rgba(255,204,0,.18)}
+    .seltp{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;margin-bottom:10px}
+    .sll{font-size:.57rem;font-weight:700;letter-spacing:.13em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:3px}
+    .sld{font-size:.57rem;color:rgba(255,255,255,.22);margin-bottom:4px}
+    .slm{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;line-height:1.2;margin-bottom:4px}
+    .slp{font-size:.82rem;color:rgba(255,255,255,.6)}
+    .slr{font-size:.72rem;color:rgba(255,255,255,.3);margin-top:4px;font-style:italic}
+    .slcote{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;color:var(--gold);line-height:1;text-align:right;white-space:nowrap}
+    .slcl{font-size:.5rem;color:rgba(255,255,255,.25);font-weight:700;letter-spacing:.08em;text-align:right}
+
+    /* STATS ACCORDION */
+    .stoggle{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:rgba(255,255,255,.5);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
+    .stoggle:hover{background:rgba(255,255,255,.06);color:#fff}
+    .sarrow{transition:transform .3s;font-size:.65rem;opacity:.6}
+    .stopen .sarrow{transform:rotate(180deg)}
+    .scont{display:none;padding-top:8px}
+    .scont.open{display:block;animation:fadeIn .22s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .stline{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.45}
+    .stline:last-child{border-bottom:none}
+    .stline strong{color:#fff}
+
+    /* TOTALS */
+    .totg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.055);border-radius:16px;overflow:hidden;margin:18px 0}
+    .totc{background:rgba(255,255,255,.02);padding:16px 12px;text-align:center}
+    .totl{font-size:.54rem;font-weight:700;letter-spacing:.13em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:6px}
+    .totv{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.55rem;line-height:1}
+
+    /* VERDICT */
+    .verd{border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .vemoji{font-size:2.2rem;flex-shrink:0}
+    .vtitle{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;margin-bottom:3px}
+    .vsub{font-size:.78rem;opacity:.72;line-height:1.45}
+
+    /* WHY */
+    .whybox{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+    .whylbl{font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:12px}
+    .whyi{display:flex;gap:11px;margin-bottom:12px;align-items:flex-start}
+    .whyi:last-child{margin-bottom:0}
+    .we{font-size:1.15rem;flex-shrink:0;margin-top:1px}
+    .wt{font-size:.82rem;color:rgba(255,255,255,.62);line-height:1.6}
+    .wt strong{color:#fff;font-weight:700}
+
+    .actrow{display:flex;gap:10px;margin-bottom:16px}
+    .actbtn{flex:1;padding:13px;border-radius:13px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+    .ap{background:var(--gold);color:#000}.ap:hover{box-shadow:0 4px 22px rgba(255,204,0,.28);transform:translateY(-1px)}
+    .as{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65)}.as:hover{background:rgba(255,255,255,.09);color:#fff}
+    .ash{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--blue)}.ash:hover{background:rgba(96,165,250,.15)}
+    .disc{font-size:.6rem;color:rgba(255,255,255,.18);line-height:1.6;padding:13px 16px;background:rgba(255,255,255,.02);border-radius:11px;border:1px solid rgba(255,255,255,.04)}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin:16px 0}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="logo">BET-IA</div>
+      <div class="nav-tag">Ticket Generator</div>
+    </div>
+    <div class="ai-pill"><span class="ai-dot"></span>IA ACTIVE</div>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-title">Ton ticket<br><span>optimisé par IA</span></div>
+    <div class="hero-sub">Configure ta mise et ton risque — l'IA génère un ticket avec de vraies stats</div>
+  </div>
+
+  <div class="form-card">
+    <label class="fl">💰 Ta mise</label>
+    <div class="aw">
+      <span class="ei">€</span>
+      <input type="number" class="ai" id="mise" value="20" min="1" max="100000">
+    </div>
+    <div class="qas">
+      <button class="qb" onclick="setMise(5)">5€</button>
+      <button class="qb" onclick="setMise(10)">10€</button>
+      <button class="qb" onclick="setMise(20)">20€</button>
+      <button class="qb" onclick="setMise(50)">50€</button>
+      <button class="qb" onclick="setMise(100)">100€</button>
+      <button class="qb" onclick="setMise(200)">200€</button>
+    </div>
+
+    <div class="rs">
+      <div class="rh">
+        <label class="fl" style="margin:0">⚡ Niveau de risque</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="rpct" id="rPct">50</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.3rem;color:rgba(255,255,255,.28)">%</span>
+          <span class="rbadge rbv" id="rBadge">🎯 VALUE BET</span>
+        </div>
+      </div>
+      <div class="st">
+        <div class="sf" id="sFill" style="width:50%"></div>
+        <input type="range" class="rsl" id="rSlider" min="1" max="99" value="50" oninput="updateRisk(this.value)">
+      </div>
+      <div class="rzones"><span>😴 Très prudent</span><span>🎯 Value bet</span><span>💀 YOLO</span></div>
+    </div>
+
+    <label class="fl">🏟️ Sport</label>
+    <div class="spg">
+      <div class="spb active" onclick="selectSport(this,'Football')"><span class="se">⚽</span><span class="sn">Football</span></div>
+      <div class="spb" onclick="selectSport(this,'Tennis')"><span class="se">🎾</span><span class="sn">Tennis</span></div>
+      <div class="spb" onclick="selectSport(this,'Basketball')"><span class="se">🏀</span><span class="sn">Basket</span></div>
+      <div class="spb" onclick="selectSport(this,'Rugby')"><span class="se">🏉</span><span class="sn">Rugby</span></div>
+      <div class="spb" onclick="selectSport(this,'Surprise')"><span class="se">🤖</span><span class="sn">IA Choisit</span></div>
+    </div>
+
+    <label class="fl">🎰 Nombre de sélections</label>
+    <div class="nbrow">
+      <div class="nbb" onclick="selectNb(this,1)">1<span class="nbs">Simple</span></div>
+      <div class="nbb active" onclick="selectNb(this,2)">2<span class="nbs">Doublé</span></div>
+      <div class="nbb" onclick="selectNb(this,3)">3<span class="nbs">Triplé</span></div>
+      <div class="nbb" onclick="selectNb(this,4)">4<span class="nbs">Combiné</span></div>
+      <div class="nbb" onclick="selectNb(this,5)">5<span class="nbs">Maxi</span></div>
+    </div>
+
+    <label class="fl">🔍 Focus <span style="color:rgba(255,255,255,.2);font-weight:400;text-transform:none;letter-spacing:0">— équipe, ligue, pays (optionnel)</span></label>
+    <input type="text" class="finput" id="focus" placeholder="Ex : PSG, Premier League, Ligue des Champions…">
+
+    <button class="genbtn" id="genBtn" onclick="generate()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      GÉNÉRER MON TICKET
+    </button>
+  </div>
+
+  <div id="ticketArea"></div>
+</main>
+
+<script>
+  let sport='Football', nb=2;
+  window._lastTicket = null;
+
+  window.onload=()=>updateRisk(50);
+
+  function setMise(v){ document.getElementById('mise').value=v; }
+
+  function updateRisk(v){
+    document.getElementById('rPct').textContent=v;
+    document.getElementById('sFill').style.width=v+'%';
+    const b=document.getElementById('rBadge');
+    if(v<20){b.className='rbadge rbs';b.textContent='😴 TRÈS PRUDENT';}
+    else if(v<40){b.className='rbadge rbs';b.textContent='✅ PRUDENT';}
+    else if(v<60){b.className='rbadge rbv';b.textContent='🎯 VALUE BET';}
+    else if(v<80){b.className='rbadge rbr';b.textContent='🔥 RISQUÉ';}
+    else{b.className='rbadge rbr';b.textContent='💀 YOLO';}
+  }
+
+  function selectSport(el,name){
+    document.querySelectorAll('.spb').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active'); sport=name;
+  }
+  function selectNb(el,n){
+    document.querySelectorAll('.nbb').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active'); nb=n;
+  }
+  const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+  async function generate(){
+    const mise=parseFloat(document.getElementById('mise').value)||20;
+    const risk=parseInt(document.getElementById('rSlider').value);
+    const focus=document.getElementById('focus').value.trim();
+    const btn=document.getElementById('genBtn');
+    const area=document.getElementById('ticketArea');
+
+    btn.disabled=true;
+    btn.innerHTML=`<div style="width:18px;height:18px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite"></div> ANALYSE EN COURS…`;
+
+    area.innerHTML=`
+      <div class="lcard">
+        <div class="spinner"></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;letter-spacing:.06em;margin-bottom:5px">L'IA ANALYSE ⚡</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.32);margin-bottom:20px">Construction de ton ticket personnalisé</div>
+        <div style="max-width:280px;margin:0 auto">
+          <div class="lstep active" id="ls1">📊 Analyse du marché ${sport}</div>
+          <div class="lstep" id="ls2">📈 Récupération des stats récentes</div>
+          <div class="lstep" id="ls3">🧠 Calcul risque / rendement</div>
+          <div class="lstep" id="ls4">🎯 Construction du ticket final</div>
+        </div>
+      </div>`;
+
+    for(let i=1;i<=4;i++){
+      await delay(600);
+      document.getElementById(`ls${i}`)?.classList.replace('active','done');
+      if(i<4) document.getElementById(`ls${i+1}`)?.classList.add('active');
+    }
+
+    try{
+      const res=await fetch('/api/generate',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({mise,risk,focus,sport,nb})
+      });
+      const data=await res.json();
+      if(!res.ok) throw new Error(data.error||`Erreur ${res.status}`);
+      renderTicket(data,mise);
+    }catch(e){
+      area.innerHTML=`
+        <div class="lcard" style="border-color:rgba(232,0,30,.3)">
+          <div style="font-size:2.8rem;margin-bottom:12px">😢</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:900;color:var(--red);margin-bottom:8px">ERREUR</div>
+          <div style="font-size:.85rem;color:rgba(255,255,255,.45);max-width:360px;margin:0 auto;line-height:1.5">${e.message}</div>
+        </div>`;
+    }finally{
+      btn.disabled=false;
+      btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> GÉNÉRER MON TICKET`;
+    }
+  }
+
+  function renderTicket(r,mise){
+    const conf=r.confiance||65;
+    const stroke=conf>=70?'#00e676':conf>=50?'#ffcc00':'#e8001e';
+    const circ=2*Math.PI*28, dash=(conf/100)*circ;
+    const tid=`BIA-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    window._lastTicket={id:tid,r,mise,sport,nb};
+
+    const typeCls=
+      r.type_ticket==='SIMPLE'?'background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.3);color:#00e676':
+      r.type_ticket==='COMBINÉ'?'background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.3);color:#ffcc00':
+      'background:rgba(232,0,30,.12);border:1px solid rgba(232,0,30,.3);color:#e8001e';
+    const vBg=
+      conf>=70?'background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.14);color:var(--green)':
+      conf>=50?'background:rgba(255,204,0,.07);border:1px solid rgba(255,204,0,.14);color:var(--gold)':
+      'background:rgba(232,0,30,.07);border:1px solid rgba(232,0,30,.14);color:var(--red)';
+
+    const selsHTML=(r.selections||[]).map((s,i)=>{
+      const st=s.stats?.length?`
+        <button class="stoggle" onclick="toggleStats(this,'sc${i}')">
+          📊 VOIR STATS & JUSTIFICATIONS <span class="sarrow">▼</span>
+        </button>
+        <div class="scont" id="sc${i}">
+          ${s.stats.map(x=>`<div class="stline">${x.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`).join('')}
+        </div>`:'';
+      return `
+        <div class="seli">
+          <div class="seltp">
+            <div>
+              <div class="sll">${s.league||''}</div>
+              ${s.date_match?`<div class="sld">📅 ${s.date_match}</div>`:''}
+              <div class="slm">${s.match||'—'}</div>
+              <div class="slp">${s.emoji||'⚽'} ${s.pari||'—'}</div>
+              ${s.raison_courte?`<div class="slr">"${s.raison_courte}"</div>`:''}
+            </div>
+            <div>
+              <div class="slcote">${parseFloat(s.cote).toFixed(2)}</div>
+              <div class="slcl">COTE</div>
+            </div>
+          </div>
+          ${st}
+        </div>`;
+    }).join('');
+
+    const whyHTML=(r.pourquoi||[]).map(p=>`
+      <div class="whyi">
+        <span class="we">${p.emoji}</span>
+        <span class="wt">${p.texte.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</span>
+      </div>`).join('');
+
+    document.getElementById('ticketArea').innerHTML=`
+    <div class="tcard">
+      <div class="thead">
+        <div>
+          <div class="tid"># ${tid}</div>
+          <div class="tmeta">${sport} · ${nb} sélection${nb>1?'s':''}</div>
+        </div>
+        <span class="ttype" style="${typeCls}">${r.type_ticket||'COMBINÉ'}</span>
+      </div>
+      <div class="tbody">
+        <div class="crow">
+          <div class="cring">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="5.5"/>
+              <circle cx="36" cy="36" r="28" fill="none" stroke="${stroke}" stroke-width="5.5"
+                stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/>
+            </svg>
+            <div class="crtxt">
+              <span class="crpct" style="color:${stroke}">${conf}%</span>
+              <span class="crsm">CONF.</span>
+            </div>
+          </div>
+          <div class="cinfo">
+            <div class="ctitle">${r.verdict_titre||'Ticket IA'}</div>
+            <div class="csub">${r.verdict_texte||''}</div>
+          </div>
+        </div>
+
+        <div class="slbl">🎯 SÉLECTIONS</div>
+        ${selsHTML}
+
+        <div class="totg">
+          <div class="totc"><div class="totl">Mise</div><div class="totv" style="color:var(--gold)">${mise}€</div></div>
+          <div class="totc"><div class="totl">Cote totale</div><div class="totv" style="color:var(--gold)">${r.cote_totale?.toFixed(2)||'—'}</div></div>
+          <div class="totc"><div class="totl">Gain potentiel</div><div class="totv" style="color:var(--green)">${r.gain_potentiel||'—'}€</div></div>
+        </div>
+
+        <div class="verd" style="${vBg}">
+          <span class="vemoji">${r.verdict_emoji||'🎯'}</span>
+          <div><div class="vtitle">${r.verdict_titre||''}</div><div class="vsub">${r.verdict_texte||''}</div></div>
+        </div>
+
+        <div class="whybox">
+          <div class="whylbl">💡 POURQUOI CE TICKET ?</div>
+          ${whyHTML}
+        </div>
+
+        <div class="actrow">
+          <button class="actbtn ap" onclick="generate()">🔄 Nouveau</button>
+          <button class="actbtn as" onclick="copyTick()">📋 Copier</button>
+          <button class="actbtn ash" onclick="shareTick()">🔗 Partager</button>
+        </div>
+        <div class="disc">⚠️ Ce ticket est généré par IA à titre indicatif uniquement. Les paris sportifs comportent des risques financiers. Ne pariez que ce que vous pouvez vous permettre de perdre. Joueurs Info Service : <strong>09 74 75 13 13</strong></div>
+      </div>
+    </div>`;
+
+    document.getElementById('ticketArea').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function toggleStats(btn, id){
+    const c=document.getElementById(id);
+    const open=c.classList.toggle('open');
+    btn.classList.toggle('stopen',open);
+  }
+
+  function copyTick(){
+    const t=window._lastTicket; if(!t) return;
+    let txt=`🎯 TICKET BET-IA #${t.id}\n${'─'.repeat(30)}\n\n`;
+    (t.r.selections||[]).forEach((s,i)=>{
+      txt+=`${i+1}. ${s.match}\n   📌 ${s.pari} @ ${parseFloat(s.cote).toFixed(2)}\n`;
+      if(s.stats?.[0]) txt+=`   ${s.stats[0]}\n`;
+      txt+='\n';
+    });
+    txt+=`Mise: ${t.mise}€  |  Cote: ${t.r.cote_totale?.toFixed(2)}  |  Gain potentiel: ${t.r.gain_potentiel}€\n\nGénéré par BET-IA ⚡`;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const btn=event.target.closest('button');
+      const o=btn.innerHTML; btn.innerHTML='✅ Copié !';
+      setTimeout(()=>btn.innerHTML=o,2000);
+    });
+  }
+
+  function shareTick(){
+    const t=window._lastTicket; if(!t) return;
+    const text=`🎯 Mon ticket BET-IA #${t.id}\n${t.nb} sélection${t.nb>1?'s':''} ${t.sport}\nCote: ${t.r.cote_totale?.toFixed(2)} | Gain potentiel: ${t.r.gain_potentiel}€`;
+    if(navigator.share){ navigator.share({title:'BET-IA',text}).catch(()=>{}); }
+    else {
+      navigator.clipboard.writeText(text);
+      const btn=event.target.closest('button');
+      const o=btn.innerHTML; btn.innerHTML='✅ Copié !';
+      setTimeout(()=>btn.innerHTML=o,2000);
+    }
+  }
+</script>
+</body>
+</html>
